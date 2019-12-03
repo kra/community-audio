@@ -1,0 +1,35 @@
+raspbian lite buster
+GeneralPlus usb sound
+
+on pi:
+  run raspi-config
+  interfacing enable ssh
+
+  reboot
+
+  enable passwordless ssh to pi user
+
+local:
+
+  update deploy/hosts pibox for correct ip address
+
+  ansible-playbook -i deploy/hosts playbook.yml
+
+on pi:
+
+  edit /usr/share/alsa/alsa.conf
+  defaults.ctl.card 0
+  defaults.pcm.card 0
+
+  reboot
+  
+todo:
+
+play audio when handset lifted
+start recording when handset lifted
+stop recording when handset replaced
+
+notes:
+
+arecord --device=plughw:1,0 --format S16_LE --rate 44100 -c1 test.wav
+aplay --device=plughw:1,0 test.wav
