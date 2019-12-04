@@ -1,0 +1,9 @@
+---
+- name: make futel directory
+  file:
+    path: /opt/futel
+    state: directory
+- name: make source directory
+  file:
+    path: /opt/futel/src
+    state: directory
