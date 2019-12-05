@@ -34,7 +34,8 @@ def log(line):
     sys.stdout.flush()
 
 def record_file_path():
-    return '/'.join(['/opt/futel/var', datetime.datetime.now().isoformat()])
+    return '/'.join(['/mnt/futel',
+                     datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S%f')])
 
 def play_intro():
     subprocess.call(PLAY_INTRO_CMD)

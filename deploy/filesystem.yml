@@ -11,3 +11,14 @@
   file:
     path: /opt/futel/var
     state: directory
+- name: make mount directory
+  file:
+    path: /mnt/futel
+    state: directory
+- name: mount flash drive
+  mount:
+    path: /mnt/futel
+    src: UUID=E722-DEBB
+    fstype: vfat
+    opts: defaults,auto,users,rw
+    state: mounted
