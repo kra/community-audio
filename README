@@ -31,6 +31,6 @@ stop recording when handset replaced
 
 notes:
 
-arecord --device=plughw:1,0 --format S16_LE --rate 44100 -c1 --process-id-file pid test.wav
-kill `cat pid`
-aplay --device=plughw:1,0 test.wav
+5 megs per minute
+200 mins per gig
+6400 mins per 32GB drive

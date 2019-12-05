@@ -17,7 +17,6 @@ PLAY_INTRO_CMD = [
     '--device=plughw:1,0',
     '/usr/share/sounds/alsa/Front_Center.wav']
 
-# XXX time limit
 RUN_RECORD_CMD = [
     'arecord',
     '--device=plughw:1,0',
@@ -25,7 +24,9 @@ RUN_RECORD_CMD = [
     'S16_LE',
     '--rate',
     '44100',
-    '-c1']
+    '-c1',
+    '--duration',
+    '600']
 
 def record_file_path():
     return '/'.join(['/opt/futel/var', datetime.datetime.now().isoformat()])
@@ -66,5 +67,6 @@ GPIO.add_event_detect(PIN, GPIO.BOTH, callback=button_callback)
 
 while True:
     print("cycle")
-    # XXX should check and stop recording if hookswitch released
+    # could check and stop recording if hookswitch released, but the time limit
+    # makes this less important
     time.sleep(1)
