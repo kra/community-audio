@@ -25,18 +25,18 @@ RUN_RECORD_CMD = [
     'S16_LE',
     '--rate',
     '44100',
-    '-c1',
-    '/opt/futel/var/test.wav']
+    '-c1']
 
-def filename():
-    return datetime.datetime.now().isoformat()
+def record_file_path():
+    return '/'.join(['/opt/futel/var', datetime.datetime.now().isoformat()])
 
 def play_intro():
     subprocess.call(PLAY_INTRO_CMD)
 
 def record():
     global record_child
-    record_child = subprocess.Popen(RUN_RECORD_CMD)
+    run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
+    record_child = subprocess.Popen(run_record_cmd)
 
 def terminate_record():
     global record_child
