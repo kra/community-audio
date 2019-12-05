@@ -3,6 +3,7 @@
 import RPi.GPIO as GPIO
 import datetime
 import subprocess
+import sys
 import time
 
 PIN=21
@@ -28,6 +29,10 @@ RUN_RECORD_CMD = [
     '--duration',
     '600']
 
+def log(line):
+    print(line)
+    sys.stdout.flush()
+
 def record_file_path():
     return '/'.join(['/opt/futel/var', datetime.datetime.now().isoformat()])
 
@@ -43,7 +48,7 @@ def record():
 def terminate_record():
     global record_child
     if record_child is None:
-        print("no recording child to terminate")
+        log("no recording child to terminate")
     else:
         record_child.terminate()
     record_child = None
@@ -57,16 +62,16 @@ def hookswitch_down():
 
 def button_callback(channel):
     if GPIO.input(PIN):
-        print("rising")         # release
+        log("rising")         # release
         hookswitch_up()
     else:
-        print("falling")        # push
+        log("falling")        # push
         hookswitch_down()
 
 GPIO.add_event_detect(PIN, GPIO.BOTH, callback=button_callback)
 
 while True:
-    print("cycle")
+    log("cycle")
     # could check and stop recording if hookswitch released, but the time limit
     # makes this less important
-    time.sleep(1)
+    time.sleep(5)
