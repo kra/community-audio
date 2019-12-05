@@ -35,13 +35,14 @@ def play_intro():
 
 def record():
     global record_child
+    terminate_record()
     run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
     record_child = subprocess.Popen(run_record_cmd)
 
 def terminate_record():
     global record_child
     if record_child is None:
-        print("no recording child")
+        print("no recording child to terminate")
     else:
         record_child.terminate()
     record_child = None
