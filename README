@@ -31,5 +31,6 @@ stop recording when handset replaced
 
 notes:
 
-arecord --device=plughw:1,0 --format S16_LE --rate 44100 -c1 test.wav
+arecord --device=plughw:1,0 --format S16_LE --rate 44100 -c1 --process-id-file pid test.wav
+kill `cat pid`
 aplay --device=plughw:1,0 test.wav
