@@ -1,9 +1,9 @@
 #!/usr/bin/env python2
 
 import RPi.GPIO as GPIO
-import time
-import subprocess
 import datetime
+import subprocess
+import time
 
 PIN=21
 
@@ -26,12 +26,10 @@ RUN_RECORD_CMD = [
     '--rate',
     '44100',
     '-c1',
-    '--process-id-file',
-    '/opt/futel/var/pid',
     '/opt/futel/var/test.wav']
 
-# def filename():
-#     return datetime.datetime.now().isoformat()
+def filename():
+    return datetime.datetime.now().isoformat()
 
 def play_intro():
     subprocess.call(PLAY_INTRO_CMD)
