@@ -7,3 +7,7 @@
   file:
     path: /opt/futel/src
     state: directory
+- name: make var directory
+  file:
+    path: /opt/futel/var
+    state: directory
