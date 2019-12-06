@@ -13,11 +13,13 @@ GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 record_child = None
 
+# XXX should die on device busy?
 PLAY_INTRO_CMD = [
     'aplay',
     '--device=plughw:1,0',
     '/usr/share/sounds/alsa/Front_Center.wav']
 
+# XXX should die on device busy?
 RUN_RECORD_CMD = [
     'arecord',
     '--device=plughw:1,0',
@@ -63,11 +65,11 @@ def hookswitch_down():
 
 def button_callback(channel):
     if GPIO.input(PIN):
-        log("rising")         # release
-        hookswitch_up()
-    else:
-        log("falling")        # push
+        log("rising")         # release switch
         hookswitch_down()
+    else:
+        log("falling")        # contact switch
+        hookswitch_up()
 
 GPIO.add_event_detect(PIN, GPIO.BOTH, callback=button_callback)
 
