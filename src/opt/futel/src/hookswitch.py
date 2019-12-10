@@ -44,9 +44,12 @@ def play_intro():
 
 def record():
     global record_child
-    terminate_record()
-    run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
-    record_child = subprocess.Popen(run_record_cmd)
+    if record_child is not None:
+        log("recording child exists, not recording")
+    else:
+        #terminate_record()
+        run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
+        record_child = subprocess.Popen(run_record_cmd)
 
 def terminate_record():
     global record_child
@@ -57,10 +60,15 @@ def terminate_record():
     record_child = None
 
 def hookswitch_up():
-    play_intro()
+    log("hookswitch_up")
+    if record_child is None:
+        play_intro()
+    else:
+        log("recording child detected during hookswitch_up")
     record()
 
 def hookswitch_down():
+    log("hookswitch_down")
     terminate_record()
 
 def button_callback(channel):
