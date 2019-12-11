@@ -13,11 +13,14 @@ GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 record_child = None
 
-# XXX should die on device busy?
 PLAY_INTRO_CMD = [
     'aplay',
     '--device=plughw:1,0',
-    '/usr/share/sounds/alsa/Front_Center.wav']
+    '/opt/futel/src/prompt.wav']
+PLAY_BELL_CMD = [
+    'aplay',
+    '--device=plughw:1,0',
+    '/opt/futel/src/bell.wav']
 
 # XXX should die on device busy?
 RUN_RECORD_CMD = [
@@ -40,7 +43,9 @@ def record_file_path():
                      datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S%f')])
 
 def play_intro():
+    time.sleep(0.1)
     subprocess.call(PLAY_INTRO_CMD)
+    subprocess.call(PLAY_BELL_CMD)
 
 def record():
     global record_child

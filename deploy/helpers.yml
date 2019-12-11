@@ -1,4 +1,12 @@
 ---
+- name: copy assets
+  copy:
+    src: src/opt/futel/src/bell.wav
+    dest: /opt/futel/src/bell.wav
+- name: copy assets
+  copy:
+    src: src/opt/futel/src/prompt.wav
+    dest: /opt/futel/src/prompt.wav
 - name: copy script
   copy:
     src: src/opt/futel/src/hookswitch.py
