@@ -18,19 +18,26 @@ local:
 on pi:
 
   edit /usr/share/alsa/alsa.conf
-  defaults.ctl.card 0
-  defaults.pcm.card 0
+  defaults.ctl.card 1
+  defaults.pcm.card 1
+
+  adjust levels with alsamixer
 
   reboot
   
 todo:
 
-play audio when handset lifted
-start recording when handset lifted
-stop recording when handset replaced
+play recording in speaker while recording
+sync storage, allow turning off without saving?
 
 notes:
 
 5 megs per minute
 200 mins per gig
 6400 mins per 32GB drive
+
+root@raspberrypi:/mnt/futel# amixer -c 1 info
+root@raspberrypi:/mnt/futel# amixer -c 1 controls
+
+speaker volume
+root@raspberrypi:/mnt/futel# amixer -c 1 cset numid=6 75%
