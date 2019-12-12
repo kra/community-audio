@@ -12,6 +12,7 @@ GPIO.setmode(GPIO.BCM)          # pin numbering?
 GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 record_child = None
+loopback_child = None
 
 PLAY_INTRO_CMD = [
     'aplay',
@@ -22,15 +23,26 @@ PLAY_BELL_CMD = [
     '--device=plughw:1,0',
     '/opt/futel/src/bell.wav']
 
-# XXX should die on device busy?
+# play the mic output into the speaker input without consuming the input device
+RUN_LOOPBACK_CMD = [
+    'alsaloop',
+    '-C',
+    'pcm.dsnoop',
+    '-P',
+    'plughw:1,0',
+    '-c',
+    '1']
+
+# record the mic input without consuming the input device
 RUN_RECORD_CMD = [
     'arecord',
-    '--device=plughw:1,0',
+    '--device=pcm.dsnoop',
     '--format',
     'S16_LE',
     '--rate',
     '44100',
     '-c1',
+    '-Dplug:pcm.dsnoop',
     '--duration',
     '600']
 
@@ -49,19 +61,25 @@ def play_intro():
 
 def record():
     global record_child
+    global loopback_child
     if record_child is not None:
         log("recording child exists, not recording")
     else:
         #terminate_record()
+        run_loopback_cmd = RUN_LOOPBACK_CMD
+        loopback_child = subprocess.Popen(run_loopback_cmd)
         run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
         record_child = subprocess.Popen(run_record_cmd)
 
 def terminate_record():
     global record_child
+    global loopback_child
     if record_child is None:
         log("no recording child to terminate")
     else:
+        loopback_child.terminate()
         record_child.terminate()
+    loopback_child = None
     record_child = None
 
 def hookswitch_up():

@@ -1,0 +1,17 @@
+# device which receives input without consuming the busy
+pcm.snoop {
+         type dsnoop
+         ipc_key 5978293 # unique
+         slave {
+                 pcm "hw:0"
+         }
+}
+
+# device which sends output without consuming the busy
+pcm.mix {
+    type dmix
+    ipc_key 1112233  # unique
+    slave {
+        pcm "hw:0"
+     }
+}

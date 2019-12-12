@@ -21,14 +21,22 @@ on pi:
   defaults.ctl.card 1
   defaults.pcm.card 1
 
+  append alsa.conf.part to /usr/share/alsa/alsa.conf
+  
   adjust levels with alsamixer
+
+  sudo crontab -e
+  # run and kill alsaloop once so it doesn't gum up for some reason
+  @reboot (alsaloop -C pcm.dsnoop -P plughw:1,0 -c 1 &) && (sleep 0.25) && killall -9 alsaloop
+
 
   reboot
   
 todo:
 
-play recording in speaker while recording
 sync storage, allow turning off without saving?
+stop playing when hookswitch has been down for a bit
+- avoid bounces, check periodically, resart if down for 2 periods?
 
 notes:
 
@@ -41,3 +49,6 @@ root@raspberrypi:/mnt/futel# amixer -c 1 controls
 
 speaker volume
 root@raspberrypi:/mnt/futel# amixer -c 1 cset numid=6 75%
+
+this has delay
+arecord --format S16_LE -c 2 -D hw:0 | aplay
