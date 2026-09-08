@@ -23,17 +23,21 @@ PLAY_BELL_CMD = [
     '--device=plughw:1,0',
     '/opt/futel/src/bell.wav']
 
-# play the mic output into the speaker input without consuming the input device
+# Play the mic output into the speaker input without consuming the input device.
 RUN_LOOPBACK_CMD = [
     'alsaloop',
-    '-C',
+    '-C',                       # capture device
     'pcm.dsnoop',
-    '-P',
+    '-P',                       # playback device
     'plughw:1,0',
-    '-c',
-    '1']
+    '-c',                       # channel count
+    '1',
+    '-t',                       # latency in usec, prevent cpu spiking?
+    '20000',
+    '-s',                       # duration of loop in seconds
+    '300']
 
-# record the mic input without consuming the input device
+# Record the mic input without consuming the input device.
 RUN_RECORD_CMD = [
     'arecord',
     '--device=pcm.dsnoop',
@@ -43,8 +47,8 @@ RUN_RECORD_CMD = [
     '44100',
     '-c1',
     '-Dplug:pcm.dsnoop',
-    '--duration',
-    '600']
+    '-d',                       # interrupt after seconds
+    '300']
 
 def log(line):
     print(line)
@@ -65,13 +69,15 @@ def record():
     if record_child is not None:
         log("recording child exists, not recording")
     else:
-        #terminate_record()
+        # The looback_child process might still be running, that should be OK,
+        # since it doesn't consume the device.
         run_loopback_cmd = RUN_LOOPBACK_CMD
         loopback_child = subprocess.Popen(run_loopback_cmd)
         run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
         record_child = subprocess.Popen(run_record_cmd)
 
 def terminate_record():
+    """Stop both the recording and loopback commands."""
     global record_child
     global loopback_child
     if record_child is None:
@@ -105,7 +111,7 @@ def button_callback(channel):
 GPIO.add_event_detect(PIN, GPIO.BOTH, callback=button_callback)
 
 while True:
-    log("cycle")
+    # log("cycle")
     # could check and stop recording if hookswitch released, but the time limit
     # makes this less important
     time.sleep(5)
