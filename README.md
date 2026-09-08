@@ -1,4 +1,4 @@
-# comment collecting interface
+# Comment collecting interface
 
 - raspbian lite buster
 - GeneralPlus usb sound
