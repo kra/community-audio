@@ -4,12 +4,15 @@ import RPi.GPIO as GPIO
 import datetime
 import subprocess
 import sys
+import threading
 import time
 
 PIN=21
 
 GPIO.setmode(GPIO.BCM)          # pin numbering?
 GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+RECORD_TIMEOUT_SECONDS = 3 * 60
 
 record_child = None
 loopback_child = None
@@ -63,6 +66,14 @@ def play_intro():
     subprocess.call(PLAY_INTRO_CMD)
     subprocess.call(PLAY_BELL_CMD)
 
+def terminate_record_if_current(expected_record_child):
+    """
+    Terminate the recording, but only if it's still the one that started
+    this timer.
+    """
+    if record_child is expected_record_child:
+        terminate_record()
+
 def record():
     global record_child
     global loopback_child
@@ -75,6 +86,10 @@ def record():
         loopback_child = subprocess.Popen(run_loopback_cmd)
         run_record_cmd = RUN_RECORD_CMD + [record_file_path()]
         record_child = subprocess.Popen(run_record_cmd)
+        timeout_timer = threading.Timer(
+            RECORD_TIMEOUT_SECONDS, terminate_record_if_current, args=(record_child,))
+        timeout_timer.daemon = True
+        timeout_timer.start()
 
 def terminate_record():
     """Stop both the recording and loopback commands."""
